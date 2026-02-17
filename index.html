@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>⚡ CYBERPUNK PORTFOLIO • RAMDHAN YAZZ</title>
+  <!-- Font Awesome untuk ikon (opsional, kita pakai CDN) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    /* RESET & VARIABEL */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Courier New', monospace;
+    }
+
+    :root {
+      --neon-blue: #00f3ff;
+      --neon-pink: #ff00ff;
+      --neon-purple: #bc13fe;
+      --dark-bg: #0a0a0f;
+      --darker-bg: #050507;
+      --glitch-red: #ff2a2a;
+      --text-color: #e0e0e0;
+      --card-bg: rgba(10, 20, 30, 0.8);
+    }
+
+    body {
+      background: var(--dark-bg);
+      color: var(--text-color);
+      line-height: 1.6;
+      overflow-x: hidden;
+      position: relative;
+      min-height: 100vh;
+    }
+
+    /* BACKGROUND NOISE & GRAIN */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: repeating-linear-gradient(0deg, rgba(0,255,255,0.02) 0px, rgba(255,0,255,0.02) 2px, transparent 2px, transparent 4px);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    /* SIDEBAR TOGGLE (GARIS TIGA) */
+    .menu-toggle {
+      position: fixed;
+      top: 25px;
+      right: 30px;
+      width: 50px;
+      height: 45px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      cursor: pointer;
+      z-index: 1000;
+      background: rgba(0,0,0,0.5);
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--neon-purple);
+      box-shadow: 0 0 15px var(--neon-purple);
+      transition: 0.3s;
+    }
+    .menu-toggle:hover {
+      box-shadow: 0 0 25px var(--neon-pink);
+      border-color: var(--neon-pink);
+    }
+    .menu-toggle span {
+      display: block;
+      width: 100%;
+      height: 4px;
+      background: var(--neon-blue);
+      border-radius: 2px;
+      transition: 0.3s;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      right: -320px;
+      width: 300px;
+      height: 100vh;
+      background: rgba(5, 5, 10, 0.95);
+      backdrop-filter: blur(12px);
+      border-left: 2px solid var(--neon-purple);
+      box-shadow: -5px 0 30px var(--neon-purple);
+      z-index: 999;
+      transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      padding: 100px 20px 30px;
+      overflow-y: auto;
+    }
+    .sidebar.active {
+      right: 0;
+    }
+    .sidebar h3 {
+      color: var(--neon-pink);
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 1.5rem;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      text-shadow: 0 0 8px var(--neon-pink);
+    }
+    .sidebar-menu {
+      list-style: none;
+    }
+    .sidebar-menu li {
+      margin-bottom: 15px;
+      border-bottom: 1px solid rgba(188, 19, 254, 0.3);
+      padding-bottom: 10px;
+    }
+    .sidebar-menu li a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--neon-blue);
+      text-decoration: none;
+      font-size: 1rem;
+      font-weight: bold;
+      padding: 10px 15px;
+      border-radius: 6px;
+      transition: 0.3s;
+      border: 1px solid transparent;
+    }
+    .sidebar-menu li a i {
+      width: 25px;
+      color: var(--neon-purple);
+      font-size: 1.2rem;
+    }
+    .sidebar-menu li a:hover {
+      background: rgba(188, 19, 254, 0.2);
+      border-color: var(--neon-pink);
+      color: var(--neon-pink);
+      transform: translateX(-5px);
+      box-shadow: -5px 0 15px var(--neon-purple);
+    }
+
+    /* LOGO */
+    .logo {
+      position: fixed;
+      top: 15px;
+      left: 20px;
+      z-index: 1000;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: 2px solid var(--neon-purple);
+      box-shadow: 0 0 20px var(--neon-purple);
+      overflow: hidden;
+      transition: 0.3s;
+    }
+    .logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .logo:hover {
+      transform: scale(1.1);
+      border-color: var(--neon-pink);
+      box-shadow: 0 0 30px var(--neon-pink);
+    }
+
+    /* MAIN CONTAINER */
+    .main-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 100px 20px 50px;
+      transition: 0.3s;
+    }
+
+    /* PAGE (portfolio atau fitur) */
+    .page {
+      display: none;
+      animation: fadeIn 0.5s;
+    }
+    .page.active-page {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* TOMBOL KEMBALI KE PORTFOLIO */
+    .back-to-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--neon-blue);
+      cursor: pointer;
+      margin-bottom: 30px;
+      font-size: 1rem;
+      border: 1px solid var(--neon-purple);
+      padding: 8px 15px;
+      border-radius: 30px;
+      transition: 0.3s;
+      background: rgba(0,0,0,0.5);
+    }
+    .back-to-home:hover {
+      background: var(--neon-purple);
+      color: #000;
+      box-shadow: 0 0 20px var(--neon-purple);
+    }
+
+    /* ========== PORTFOLIO SECTION ========== */
+    /* HERO GLITCH */
+    .hero {
+      text-align: center;
+      margin-bottom: 50px;
+      position: relative;
+    }
+    .glitch {
+      font-size: 3.5rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      color: white;
+      text-shadow: 0.05em 0 0 var(--neon-pink), -0.05em -0.025em 0 var(--neon-blue);
+      animation: glitch 725ms infinite;
+      letter-spacing: 5px;
+    }
+    .glitch span {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--dark-bg);
+    }
+    @keyframes glitch {
+      0%, 100% { text-shadow: 0.05em 0 0 var(--neon-pink), -0.05em -0.025em 0 var(--neon-blue); }
+      25% { text-shadow: -0.05em -0.025em 0 var(--neon-pink), 0.025em 0.05em 0 var(--neon-blue); }
+      50% { text-shadow: 0.025em 0.05em 0 var(--neon-pink), 0.05em 0 0 var(--neon-blue); }
+      75% { text-shadow: 0.05em 0 0 var(--neon-pink), -0.05em -0.025em 0 var(--neon-blue); }
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      color: var(--neon-purple);
+      text-shadow: 0 0 5px var(--neon-purple);
+      margin-top: 10px;
+    }
+
+    /* ABOUT dengan progress bar interaktif */
+    .about {
+      background: var(--card-bg);
+      border: 1px solid var(--neon-purple);
+      border-radius: 20px;
+      padding: 30px;
+      margin: 40px 0;
+      backdrop-filter: blur(5px);
+    }
+    .about h2 {
+      color: var(--neon-pink);
+      margin-bottom: 20px;
+    }
+    .skill-item {
+      margin: 15px 0;
+    }
+    .skill-info {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+      color: var(--neon-blue);
+    }
+    .progress-bar {
+      width: 100%;
+      height: 12px;
+      background: #1a1a2e;
+      border-radius: 20px;
+      overflow: hidden;
+      cursor: pointer;
+      border: 1px solid var(--neon-purple);
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink));
+      border-radius: 20px;
+      transition: width 0.3s ease;
+      box-shadow: 0 0 10px var(--neon-blue);
+    }
+    /* interaktif: klik pada progress bar akan menambah width (simulasi) */
+    .progress-bar:active .progress-fill {
+      width: 90% !important;
+    }
+
+    /* PROJECT GRID */
+    .projects {
+      margin: 50px 0;
+    }
+    .projects h2 {
+      color: var(--neon-pink);
+      margin-bottom: 20px;
+    }
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+    }
+    .project-card {
+      background: var(--card-bg);
+      border: 1px solid var(--neon-purple);
+      border-radius: 15px;
+      padding: 20px;
+      transition: 0.4s;
+      position: relative;
+      overflow: hidden;
+    }
+    .project-card::before {
+      content: "";
+      position: absolute;
+      top: -2px; left: -2px; right: -2px; bottom: -2px;
+      background: linear-gradient(45deg, var(--neon-blue), var(--neon-pink), var(--neon-purple));
+      z-index: -2;
+      filter: blur(10px);
+      opacity: 0;
+      transition: 0.4s;
+    }
+    .project-card:hover {
+      transform: translateY(-10px) scale(1.02);
+      border-color: transparent;
+    }
+    .project-card:hover::before {
+      opacity: 1;
+    }
+    .project-card h3 {
+      color: var(--neon-blue);
+      margin-bottom: 10px;
+    }
+    .project-card p {
+      color: #ccc;
+    }
+
+    /* SKILLS KATEGORI */
+    .skills-section {
+      margin: 50px 0;
+    }
+    .skills-section h2 {
+      color: var(--neon-pink);
+      margin-bottom: 20px;
+    }
+    .skill-category {
+      background: var(--card-bg);
+      border: 1px solid var(--neon-purple);
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .skill-category h3 {
+      color: var(--neon-blue);
+      margin-bottom: 15px;
+    }
+    .skill-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .skill-tag {
+      background: rgba(188, 19, 254, 0.2);
+      border: 1px solid var(--neon-purple);
+      padding: 8px 15px;
+      border-radius: 30px;
+      color: white;
+      transition: 0.3s;
+    }
+    .skill-tag:hover {
+      background: var(--neon-purple);
+      color: black;
+      box-shadow: 0 0 15px var(--neon-purple);
+      transform: scale(1.05);
+    }
+
+    /* FORM KONTAK */
+    .contact {
+      background: var(--card-bg);
+      border: 1px solid var(--neon-purple);
+      border-radius: 20px;
+      padding: 30px;
+      margin: 40px 0;
+    }
+    .contact h2 {
+      color: var(--neon-pink);
+      margin-bottom: 20px;
+    }
+    .contact-options {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+    }
+    .contact-btn {
+      flex: 1;
+      min-width: 150px;
+      padding: 15px;
+      border: 2px solid var(--neon-purple);
+      border-radius: 40px;
+      text-align: center;
+      text-decoration: none;
+      color: white;
+      font-weight: bold;
+      transition: 0.3s;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .contact-btn i {
+      font-size: 1.3rem;
+    }
+    .contact-btn:hover {
+      background: var(--neon-purple);
+      color: black;
+      box-shadow: 0 0 25px var(--neon-purple);
+      transform: scale(1.05);
+    }
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    .contact-form input, .contact-form textarea {
+      background: rgba(0,0,0,0.6);
+      border: 1px solid var(--neon-blue);
+      padding: 15px;
+      border-radius: 8px;
+      color: white;
+      font-size: 1rem;
+    }
+    .contact-form button {
+      background: var(--neon-purple);
+      border: none;
+      padding: 15px;
+      border-radius: 40px;
+      color: black;
+      font-weight: bold;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .contact-form button:hover {
+      background: var(--neon-pink);
+      box-shadow: 0 0 25px var(--neon-pink);
+    }
+
+    /* ========== HALAMAN FITUR ========== */
+    .feature-page {
+      background: var(--card-bg);
+      border: 2px solid var(--neon-purple);
+      border-radius: 30px;
+      padding: 30px;
+      margin-top: 20px;
+    }
+    .feature-page h1 {
+      color: var(--neon-pink);
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--neon-blue);
+      padding-bottom: 10px;
+    }
+    .feature-page input, .feature-page textarea, .feature-page button {
+      background: rgba(0,0,0,0.7);
+      border: 1px solid var(--neon-blue);
+      color: white;
+      padding: 12px;
+      border-radius: 8px;
+      width: 100%;
+      margin: 10px 0;
+      font-size: 1rem;
+    }
+    .feature-page button {
+      background: var(--neon-purple);
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+      border: none;
+    }
+    .feature-page button:hover {
+      background: var(--neon-pink);
+      box-shadow: 0 0 20px var(--neon-pink);
+    }
+    .preview-box {
+      background: #111;
+      border: 1px dashed var(--neon-blue);
+      padding: 15px;
+      border-radius: 8px;
+      margin: 15px 0;
+      word-break: break-all;
+    }
+    /* Chat bot container */
+    .chat-container {
+      height: 400px;
+      overflow-y: auto;
+      border: 1px solid var(--neon-purple);
+      padding: 15px;
+      border-radius: 15px;
+      margin: 20px 0;
+      background: rgba(0,0,0,0.5);
+    }
+    .chat-message {
+      margin: 10px 0;
+      display: flex;
+    }
+    .user-message {
+      justify-content: flex-end;
+    }
+    .bot-message {
+      justify-content: flex-start;
+    }
+    .chat-bubble {
+      max-width: 70%;
+      padding: 10px 15px;
+      border-radius: 20px;
+      background: rgba(188, 19, 254, 0.2);
+      border: 1px solid var(--neon-purple);
+      color: white;
+    }
+    .user-message .chat-bubble {
+      background: rgba(0, 243, 255, 0.2);
+      border-color: var(--neon-blue);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .glitch { font-size: 2.5rem; }
+      .sidebar { width: 260px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LOGO -->
+  <div class="logo">
+    <img src="https://i.ibb.co/XrCTYjpx/file-292.jpg" alt="logo cyber">
+  </div>
+
+  <!-- SIDEBAR TOGGLE -->
+  <div class="menu-toggle" id="menuToggle">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+  <!-- SIDEBAR MENU -->
+  <div class="sidebar" id="sidebar">
+    <h3>𝐌α𝗌𝗂ɦ 𝐃αᥣαꭑ 𝐏𝖾𐓣𝗀𝖾ꭑᑲα𐓣𝗀α𐓣</h3>
+    <ul class="sidebar-menu">
+      <li><a href="#" data-page="download-tiktok"><i class="fab fa-tiktok"></i> Download TikTok</a></li>
+      <li><a href="#" data-page="download-youtube"><i class="fab fa-youtube"></i> Download YouTube</a></li>
+      <li><a href="#" data-page="upload-foto"><i class="fas fa-cloud-upload-alt"></i> Upload Foto ➔ Link</a></li>
+      <li><a href="#" data-page="buat-html"><i class="fas fa-code"></i> BUAT HTML (Gemini AI)</a></li>
+    </ul>
+    <div style="position:absolute; bottom:20px; left:20px; color:var(--neon-blue); font-size:0.8rem;">
+      <i class="fas fa-skull"></i> DARKNET v1.0
+    </div>
+  </div>
+
+  <!-- MAIN CONTAINER -->
+  <div class="main-container" id="mainContainer">
+
+    <!-- HALAMAN PORTFOLIO (default) -->
+    <div id="portfolio-page" class="page active-page">
+      <!-- Tombol kembali (hidden di portfolio) -->
+      <div class="back-to-home" id="backToHome" style="display: none;">⬅ Kembali ke Portfolio</div>
+
+      <!-- HERO GLITCH -->
+      <div class="hero">
+        <h1 class="glitch">☬𝑮𝒂𝒓𝒊𝒍_𝟏𝟗𝟐☬</h1>
+        <div class="subtitle"> ✞☠︎𝐂𝐘𝐁𝐄𝐑•𝐀𝐁𝐒𝐎𝐋𝐔𝐓𝐄 ☠︎✞ </div>
+      </div>
+
+      <!-- ABOUT dengan progress bar interaktif -->
+      <section class="about">
+        <h2><i class="fas fa-user-secret"></i> ABOUT // DEKRYPT</h2>
+        <p style="margin-bottom:20px;">Menembus batas digital, meretas realitas. Spesialis keamanan siber dan pengembang darkweb. Beroperasi di dimensi neon.</p>
+        <div class="skill-item">
+          <div class="skill-info"><span>⚡ CYBER ATTACK</span> <span>85%</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:85%"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-info"><span>🔐 ENKRIPSI</span> <span>92%</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:92%"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-info"><span>🤖 AI EXPLOIT</span> <span>78%</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:78%"></div></div>
+        </div>
+        <p style="font-size:0.9rem; margin-top:20px; color:var(--neon-blue);">*klik progress bar untuk simulasi peningkatan</p>
+      </section>
+
+      <!-- PROJECT GRID -->
+      <section class="projects">
+        <h2><i class="fas fa-project-diagram"></i> PROYEK BAWAH TANAH</h2>
+        <div class="project-grid">
+          <div class="project-card">
+            <h3>F32 DARK BRIDGE</h3>
+            <p>Backdoor eksperimental dengan Firebase & CT log.</p>
+          </div>
+          <div class="project-card">
+            <h3>NEON SCANNER</h3>
+            <p>Pemindai jaringan internal dengan pivot SSRF.</p>
+          </div>
+          <div class="project-card">
+            <h3>GHOST SCT</h3>
+            <p>Forge SCT valid untuk sertifikat palsu.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SKILLS KATEGORI -->
+      <section class="skills-section">
+        <h2><i class="fas fa-cogs"></i> SKILLSET</h2>
+        <div class="skill-category">
+          <h3>🔻 OFFENSIVE</h3>
+          <div class="skill-tags">
+            <span class="skill-tag">Network Pentest</span>
+            <span class="skill-tag">Web Exploit</span>
+            <span class="skill-tag">Reverse Engineering</span>
+            <span class="skill-tag">Zero-Day</span>
+          </div>
+        </div>
+        <div class="skill-category">
+          <h3>🔻 DEFENSIVE</h3>
+          <div class="skill-tags">
+            <span class="skill-tag">Kriptografi</span>
+            <span class="skill-tag">Hardening</span>
+            <span class="skill-tag">Forensik</span>
+          </div>
+        </div>
+        <div class="skill-category">
+          <h3>🔻 TOOLS</h3>
+          <div class="skill-tags">
+            <span class="skill-tag">Metasploit</span>
+            <span class="skill-tag">Burp Suite</span>
+            <span class="skill-tag">Wireshark</span>
+            <span class="skill-tag">Nmap</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- FORM KONTAK dengan pilihan -->
+      <section class="contact">
+        <h2><i class="fas fa-envelope-open-text"></i> KONTAK BAWAH TANAH</h2>
+        <div class="contact-options">
+          <a href="https://wa.me/6287712967757" target="_blank" class="contact-btn"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+          <a href="https://t.me/Ramdhan_Yazz" target="_blank" class="contact-btn"><i class="fab fa-telegram"></i> Telegram</a>
+          <a href="https://www.instagram.com/garil_rmdhn192?igsh=MTU3a2llM3lmNzVsbQ==" target="_blank" class="contact-btn"><i class="fab fa-instagram"></i> Instagram</a>
+        </div>
+        <form class="contact-form" id="contactForm">
+          <input type="text" placeholder="Nama samaran" required>
+          <input type="email" placeholder="Email sekali pakai">
+          <textarea rows="3" placeholder="Pesan gelap..."></textarea>
+          <button type="submit"><i class="fas fa-paper-plane"></i> KIRIM PAKAI ENKRIPSI</button>
+        </form>
+      </section>
+    </div>
+
+    <!-- HALAMAN FITUR: DOWNLOAD TIKTOK -->
+    <div id="download-tiktok-page" class="page feature-page">
+      <div class="back-to-home" onclick="showPortfolio()">⬅ Kembali ke Portfolio</div>
+      <h1><i class="fab fa-tiktok"></i> TikTok Video Downloader</h1>
+      <p>Masukkan URL video TikTok, lalu klik download untuk membuka layanan eksternal.</p>
+      <input type="url" id="tiktokUrl" placeholder="https://www.tiktok.com/@user/video/123456" required>
+      <button onclick="downloadTikTok()">🔻 DOWNLOAD VIA SSSTIK</button>
+      <div class="preview-box" id="tiktokResult">Hasil akan muncul di sini</div>
+    </div>
+
+    <!-- HALAMAN FITUR: DOWNLOAD YOUTUBE -->
+    <div id="download-youtube-page" class="page feature-page">
+      <div class="back-to-home" onclick="showPortfolio()">⬅ Kembali ke Portfolio</div>
+      <h1><i class="fab fa-youtube"></i> YouTube Musik Download</h1>
+      <p>Masukkan URL YouTube, kita arahkan ke y2mate.</p>
+      <input type="url" id="youtubeUrl" placeholder="https://www.youtube.com/watch?v=...">
+      <button onclick="downloadYoutube()">🎵 DOWNLOAD VIA Y2MATE</button>
+      <div class="preview-box" id="youtubeResult">Link download akan terbuka di tab baru</div>
+    </div>
+
+    <!-- HALAMAN FITUR: UPLOAD FOTO JADI LINK -->
+    <div id="upload-foto-page" class="page feature-page">
+      <div class="back-to-home" onclick="showPortfolio()">⬅ Kembali ke Portfolio</div>
+      <h1><i class="fas fa-image"></i> Upload Foto ➔ Link Base64</h1>
+      <p>Pilih foto, maka akan diubah menjadi data URL (base64) yang bisa dicopy.</p>
+      <input type="file" id="fileInput" accept="image/*">
+      <button onclick="uploadFoto()">🔗 GENERATE LINK</button>
+      <div class="preview-box" id="fotoPreview"></div>
+      <div class="preview-box" id="fotoLink" style="font-size:0.8rem;"></div>
+    </div>
+
+    <!-- HALAMAN FITUR: BUAT HTML DENGAN GEMINI AI -->
+    <div id="buat-html-page" class="page feature-page">
+      <div class="back-to-home" onclick="showPortfolio()">⬅ Kembali ke Portfolio</div>
+      <h1><i class="fas fa-robot"></i> Gemini AI - Chat Bot</h1>
+      <p>Tanyakan sesuatu, AI akan merespon (menggunakan model gemini-pro).</p>
+      <div class="chat-container" id="chatContainer">
+        <div class="chat-message bot-message">
+          <div class="chat-bubble">Halo! Aku Gemini AI, siap membantu.</div>
+        </div>
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <input type="text" id="geminiInput" placeholder="Ketik prompt..." style="flex:1;">
+        <button onclick="sendGemini()" style="width: auto; padding: 12px 20px;">Kirim</button>
+      </div>
+    </div>
+
+  </div> <!-- main-container -->
+
+  <script>
+    // ==================== SIDEBAR TOGGLE ====================
+    const menuToggle = document.getElementById('menuToggle');
+    const sidebar = document.getElementById('sidebar');
+    menuToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      sidebar.classList.toggle('active');
+    });
+    document.addEventListener('click', (e) => {
+      if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+        sidebar.classList.remove('active');
+      }
+    });
+
+    // ==================== NAVIGASI HALAMAN ====================
+    const pages = {
+      portfolio: document.getElementById('portfolio-page'),
+      'download-tiktok': document.getElementById('download-tiktok-page'),
+      'download-youtube': document.getElementById('download-youtube-page'),
+      'upload-foto': document.getElementById('upload-foto-page'),
+      'buat-html': document.getElementById('buat-html-page')
+    };
+
+    function showPage(pageId) {
+      Object.values(pages).forEach(p => p.classList.remove('active-page'));
+      pages[pageId].classList.add('active-page');
+      sidebar.classList.remove('active');
+      // sembunyikan/munculkan tombol kembali di portfolio
+      const backBtn = document.getElementById('backToHome');
+      if (pageId === 'portfolio') {
+        backBtn.style.display = 'none';
+      } else {
+        backBtn.style.display = 'inline-flex';
+      }
+    }
+
+    function showPortfolio() {
+      showPage('portfolio');
+    }
+
+    // Event listener untuk menu sidebar
+    document.querySelectorAll('.sidebar-menu li a').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const page = link.dataset.page;
+        if (page) showPage(page);
+      });
+    });
+
+    // Tombol kembali (disembunyikan di portfolio, tapi kita pasang di setiap halaman fitur)
+    // Kita sudah pasang inline onclick di masing-masing fitur
+
+    // ==================== PROGRESS BAR INTERAKTIF ====================
+    document.querySelectorAll('.progress-bar').forEach(bar => {
+      bar.addEventListener('click', function() {
+        const fill = this.querySelector('.progress-fill');
+        let current = parseInt(fill.style.width);
+        if (isNaN(current)) current = 0;
+        let newWidth = Math.min(100, current + 10);
+        fill.style.width = newWidth + '%';
+        // update angka di skill-info
+        const infoSpan = this.closest('.skill-item').querySelector('.skill-info span:last-child');
+        if (infoSpan) infoSpan.innerText = newWidth + '%';
+      });
+    });
+
+    // ==================== FORM KONTAK (HANYA SIMULASI) ====================
+    document.getElementById('contactForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      alert('Pesan terenkripsi dikirim (simulasi).');
+    });
+
+    // ==================== FITUR DOWNLOAD TIKTOK ====================
+    function downloadTikTok() {
+      const url = document.getElementById('tiktokUrl').value;
+      if (!url) {
+        alert('Masukkan URL TikTok');
+        return;
+      }
+      // Arahkan ke layanan ssstik.io
+      const ssstik = 'https://ssstik.io/id?url=' + encodeURIComponent(url);
+      document.getElementById('tiktokResult').innerHTML = `<a href="${ssstik}" target="_blank">Klik di sini jika tidak terbuka otomatis</a>`;
+      window.open(ssstik, '_blank');
+    }
+
+    // ==================== FITUR DOWNLOAD YOUTUBE ====================
+    function downloadYoutube() {
+      const url = document.getElementById('youtubeUrl').value;
+      if (!url) {
+        alert('Masukkan URL YouTube');
+        return;
+      }
+      // Gunakan y2mate
+      const y2mate = 'https://www.y2mate.com/id/youtube-mp3/' + encodeURIComponent(url);
+      document.getElementById('youtubeResult').innerHTML = `<a href="${y2mate}" target="_blank">Buka y2mate</a>`;
+      window.open(y2mate, '_blank');
+    }
+
+    // ==================== FITUR UPLOAD FOTO ====================
+    function uploadFoto() {
+      const fileInput = document.getElementById('fileInput');
+      const file = fileInput.files[0];
+      if (!file) {
+        alert('Pilih file gambar');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const base64 = e.target.result;
+        document.getElementById('fotoPreview').innerHTML = `<img src="${base64}" style="max-width:100%; max-height:200px;">`;
+        document.getElementById('fotoLink').innerText = base64.substring(0, 100) + '... (panjang)';
+        // Buat link bisa dicopy
+        const linkEl = document.createElement('a');
+        linkEl.href = base64;
+        linkEl.download = 'image.png';
+        document.getElementById('fotoLink').innerHTML += `<br><a href="${base64}" download>📥 Download gambar</a>`;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // ==================== GEMINI AI CHAT ====================
+    const API_KEY = 'AIzaSyDx2Om2y9xR6PWm3nZK4uhDkWNTGIQBRHU'; // API key diberikan
+    const chatContainer = document.getElementById('chatContainer');
+    const geminiInput = document.getElementById('geminiInput');
+
+    async function sendGemini() {
+      const prompt = geminiInput.value.trim();
+      if (!prompt) return;
+      appendMessage('user', prompt);
+      geminiInput.value = '';
+
+      // Tampilkan loading
+      appendMessage('bot', '⏳ Mengetik...');
+
+      try {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${API_KEY}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }]
+          })
+        });
+        const data = await response.json();
+        // Hapus loading
+        chatContainer.removeChild(chatContainer.lastChild);
+        if (data.candidates && data.candidates[0].content.parts[0].text) {
+          const reply = data.candidates[0].content.parts[0].text;
+          appendMessage('bot', reply);
+        } else {
+          appendMessage('bot', '⚠️ Gagal mendapatkan respons.');
+        }
+      } catch (error) {
+        chatContainer.removeChild(chatContainer.lastChild);
+        appendMessage('bot', '❌ Error: ' + error.message);
+      }
+    }
+
+    function appendMessage(sender, text) {
+      const msgDiv = document.createElement('div');
+      msgDiv.className = 'chat-message ' + (sender === 'user' ? 'user-message' : 'bot-message');
+      const bubble = document.createElement('div');
+      bubble.className = 'chat-bubble';
+      bubble.innerText = text;
+      msgDiv.appendChild(bubble);
+      chatContainer.appendChild(msgDiv);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    // Enter untuk kirim
+    geminiInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        sendGemini();
+      }
+    });
+
+    // ==================== INIT ====================
+    // Pastikan portfolio aktif
+    showPage('portfolio');
+  </script>
+</body>
+</html>
